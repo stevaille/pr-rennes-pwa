@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1, viewport-fit=cover">
+<title>P+R Rennes · places en direct</title>
+
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#15171b">
+<meta name="background-color" content="#15171b">
+
+<link rel="icon" href="favicon.ico" sizes="any">
+<link rel="icon" href="icon-192.png" type="image/png" sizes="192x192">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="P+R Rennes">
+<meta name="mobile-web-app-capable" content="yes">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;600;700;800&family=Nunito+Sans:wght@400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --asphalt:#15171b;
+    --panel:#1d2026;
+    --bezel:#0c0d10;
+    --amber:#ffb300;
+    --green:#3adb76;
+    --red:#ff5252;
+    --ink:#e7e9ee;
+    --muted:#8a93a1;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;background:var(--asphalt);color:var(--ink);font-family:'Nunito Sans',sans-serif;-webkit-font-smoothing:antialiased;}
+  body{
+    background-image:
+      radial-gradient(circle at 20% -10%, rgba(255,179,0,0.07), transparent 40%),
+      repeating-linear-gradient(180deg, rgba(255,255,255,0.015) 0px, rgba(255,255,255,0.015) 1px, transparent 1px, transparent 3px);
+  }
+  .scene{
+    max-width:640px;margin:0 auto;
+    padding-top:max(24px, env(safe-area-inset-top));
+    padding-right:max(16px, env(safe-area-inset-right));
+    padding-bottom:max(48px, env(safe-area-inset-bottom));
+    padding-left:max(16px, env(safe-area-inset-left));
+  }
+
+  header{display:flex;align-items:center;gap:10px;margin-bottom:6px;}
+  .lines{display:flex;gap:5px;}
+  .line-chip{width:23px;height:23px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-family:'Poppins',sans-serif;font-weight:700;font-size:13px;color:#0c0d10;}
+  .line-a{background:#e2231a;}
+  .line-b{background:#00a3c4;}
+  h1{font-family:'Poppins',sans-serif;font-size:21px;font-weight:700;margin:0;letter-spacing:0;}
+  .subtitle{color:var(--muted);font-size:13px;margin:6px 0 22px;line-height:1.55;}
+
+  .statusbar{display:flex;align-items:center;justify-content:space-between;background:var(--panel);border:1px solid rgba(255,255,255,0.06);border-radius:16px;padding:11px 16px;margin-bottom:18px;font-size:12.5px;color:var(--muted);}
+  .statusbar b{color:var(--ink);font-weight:700;}
+  #refresh{background:var(--bezel);border:1px solid rgba(255,255,255,0.1);color:var(--amber);width:34px;height:34px;border-radius:11px;font-size:15px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:transform .2s ease;}
+  #refresh:hover{transform:rotate(90deg);}
+  #refresh:focus-visible{outline:2px solid var(--amber);outline-offset:2px;}
+  #refresh.spin{animation:spin .6s linear;}
+  @keyframes spin{to{transform:rotate(180deg);}}
+
+  #panels{display:flex;flex-direction:column;gap:12px;}
+
+  .panel{
+    background:linear-gradient(180deg,var(--panel),#191c22);
+    border:1px solid rgba(255,255,255,0.06);
+    border-radius:20px;
+    padding:18px 18px 14px;
+    box-shadow:inset 0 1px 0 rgba(255,255,255,0.03), 0 8px 20px rgba(0,0,0,0.35);
+    position:relative;
+    overflow:hidden;
+  }
+  .panel::before{content:'';position:absolute;inset:0;background:repeating-linear-gradient(180deg, rgba(255,255,255,0.02) 0px, transparent 2px, transparent 4px);pointer-events:none;}
+
+  .panel-top{display:flex;justify-content:space-between;align-items:flex-start;gap:10px;}
+  .panel-name{font-family:'Poppins',sans-serif;font-weight:600;font-size:15.5px;color:var(--ink);}
+  .panel-tag{font-family:'Nunito Sans',sans-serif;font-size:10.5px;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;margin-top:3px;}
+
+  .led-lines{font-family:'Space Mono',monospace;font-size:11px;letter-spacing:.1em;color:rgba(255,179,0,0.65);text-align:right;line-height:1.5;white-space:pre;}
+
+  .readout{display:flex;align-items:baseline;gap:10px;margin-top:16px;}
+  .digits{font-family:'Space Mono',monospace;font-size:46px;font-weight:700;line-height:1;letter-spacing:0;}
+  .digits.green{color:var(--green);text-shadow:0 0 14px rgba(58,219,118,0.45);}
+  .digits.red{color:var(--red);text-shadow:0 0 14px rgba(255,82,82,0.45);}
+  .digits.amber{color:var(--amber);text-shadow:0 0 14px rgba(255,179,0,0.4);}
+  .digits.dim{color:var(--muted);text-shadow:none;}
+  .readout-label{font-family:'Nunito Sans',sans-serif;font-size:12.5px;color:var(--muted);font-weight:600;}
+
+  .capacity-bar{height:6px;border-radius:4px;background:rgba(255,255,255,0.06);margin-top:14px;overflow:hidden;}
+  .capacity-fill{height:100%;border-radius:4px;transition:width .4s ease;}
+
+  .panel-foot{display:flex;justify-content:space-between;align-items:center;margin-top:12px;}
+  .status-word{font-family:'Poppins',sans-serif;font-size:11px;font-weight:600;letter-spacing:.03em;padding:4px 10px;border-radius:20px;}
+  .status-word.green{background:rgba(58,219,118,0.12);color:var(--green);}
+  .status-word.red{background:rgba(255,82,82,0.12);color:var(--red);}
+  .status-word.dim{background:rgba(138,147,161,0.12);color:var(--muted);}
+
+  details{font-size:11px;}
+  details summary{color:var(--muted);cursor:pointer;list-style:none;}
+  details summary::-webkit-details-marker{display:none;}
+  details summary:before{content:'· champs bruts';}
+  details[open] summary:before{content:'· masquer';}
+  details pre{margin:8px 0 0;padding:10px;background:var(--bezel);border-radius:10px;color:#9fb0c0;font-family:'Space Mono',monospace;font-size:10.5px;white-space:pre-wrap;word-break:break-all;max-height:160px;overflow:auto;}
+
+  .skeleton{height:118px;border-radius:20px;background:linear-gradient(90deg, var(--panel) 25%, #23262d 37%, var(--panel) 63%);background-size:400% 100%;animation:shimmer 1.4s ease infinite;}
+  @keyframes shimmer{0%{background-position:100% 0;}100%{background-position:0 0;}}
+
+  .error-panel{border:1px dashed rgba(255,82,82,0.35);border-radius:20px;padding:18px;color:var(--muted);font-size:13px;line-height:1.6;}
+  .error-panel b{color:var(--red);}
+  .error-panel code{background:var(--bezel);padding:1px 5px;border-radius:5px;color:var(--amber);font-family:'Space Mono',monospace;font-size:11.5px;}
+
+  footer{margin-top:24px;text-align:center;font-size:11px;color:var(--muted);line-height:1.6;}
+  footer a{color:var(--muted);}
+</style>
+</head>
+<body>
+<div class="scene">
+  <header>
+    <div class="lines"><div class="line-chip line-a">A</div><div class="line-chip line-b">B</div></div>
+    <h1>P+R Rennes</h1>
+  </header>
+  <p class="subtitle">Places disponibles dans les parcs-relais du réseau STAR, lues en direct sur les panneaux d'affichage à l'entrée de chaque parc.</p>
+
+  <div class="statusbar">
+    <span id="status-text">Connexion au flux…</span>
+    <button id="refresh" title="Actualiser" aria-label="Actualiser">↻</button>
+  </div>
+
+  <main id="panels">
+    <div class="skeleton"></div>
+    <div class="skeleton"></div>
+    <div class="skeleton"></div>
+  </main>
+
+  <footer>
+    Source : Open Data Rennes Métropole — jeu de données <em>tco-parcsrelais-star-etat-tr</em> (Keolis Rennes), rafraîchi côté source toutes les minutes.<br>
+    Actualisation automatique ici toutes les 60 s.
+  </footer>
+</div>
+
+<script>
+const ENDPOINTS = [
+  'https://data.rennesmetropole.fr/api/explore/v2.1/catalog/datasets/tco-parcsrelais-star-etat-tr/records?limit=40',
+  'https://data.explore.star.fr/api/explore/v2.1/catalog/datasets/tco-parcsrelais-star-etat-tr/records?limit=40'
+];
+
+const panelsEl = document.getElementById('panels');
+const statusEl = document.getElementById('status-text');
+const refreshBtn = document.getElementById('refresh');
+
+function pick(row, keys){
+  const rowKeys = Object.keys(row);
+  for(const k of keys){
+    const foundKey = rowKeys.find(rk => rk.toLowerCase() === k.toLowerCase());
+    if(foundKey !== undefined && row[foundKey] !== null && row[foundKey] !== '') return row[foundKey];
+  }
+  return undefined;
+}
+
+function normalize(row){
+  const capacite = Number(pick(row, ['capaciteparking','capacitetotale','capacite_totale','capacite'])) || null;
+
+  const dispoTypes = ['jrdinfosoliste','jrdinfopmr','jrdinfocovoiturage','jrdinfoelectrique'];
+  const dispoValues = dispoTypes.map(k => row[k]).filter(v => v !== null && v !== undefined && v !== '');
+  const dispoSum = dispoValues.length ? dispoValues.reduce((a,b) => a + Number(b), 0) : null;
+  const dispoDirect = pick(row, ['dispotot','dispo_tot','disponibilite','disponible','dispo']);
+  const dispo = dispoDirect !== undefined ? Number(dispoDirect) : dispoSum;
+
+  return {
+    nom: pick(row, ['nom','nomparc','nom_parc','name','libelle']) || 'Parc relais',
+    etatOuverture: String(pick(row, ['etatouverture','etat_ouverture','etat']) || '').toUpperCase(),
+    etatRemplissage: String(pick(row, ['etatremplissage','etat_remplissage']) || '').toUpperCase(),
+    capacite,
+    dispo: (dispo !== null && !Number.isNaN(dispo)) ? dispo : null,
+    ligne1: pick(row, ['jrdmentionligne1','jrd_mention_ligne1']) || '',
+    ligne2: pick(row, ['jrdmentionligne2','jrd_mention_ligne2']) || '',
+    lastupdate: pick(row, ['lastupdate','last_update','derniere_maj']) || null,
+    detailTypes: {
+      soliste: row.jrdinfosoliste ?? null,
+      pmr: row.jrdinfopmr ?? null,
+      covoiturage: row.jrdinfocovoiturage ?? null,
+      electrique: row.jrdinfoelectrique ?? null
+    },
+    raw: row
+  };
+}
+
+function renderPanel(p){
+  const ferme = p.etatOuverture.includes('FERM');
+  const complet = p.etatRemplissage.includes('COMPLET');
+  let colorClass, statusLabel;
+  if(ferme){ colorClass = 'red'; statusLabel = 'FERMÉ'; }
+  else if(complet){ colorClass = 'red'; statusLabel = 'COMPLET'; }
+  else if(p.dispo !== null && !Number.isNaN(p.dispo)){ colorClass = 'green'; statusLabel = 'OUVERT'; }
+  else { colorClass = 'dim'; statusLabel = 'DONNÉE INDISPO.'; }
+
+  const digitText = ferme ? '—' : (p.dispo !== null && !Number.isNaN(p.dispo) ? p.dispo : '—');
+  const pct = (p.capacite && p.dispo !== null) ? Math.max(0, Math.min(100, Math.round((p.dispo / p.capacite) * 100))) : null;
+  const ledLines = [p.ligne1, p.ligne2].filter(Boolean).join('\n');
+
+  const el = document.createElement('div');
+  el.className = 'panel';
+  el.innerHTML = `
+    <div class="panel-top">
+      <div>
+        <div class="panel-name">${escapeHtml(p.nom)}</div>
+        <div class="panel-tag">Parc relais · Réseau STAR</div>
+      </div>
+      ${ledLines ? `<div class="led-lines">${escapeHtml(ledLines)}</div>` : ''}
+    </div>
+    <div class="readout">
+      <div class="digits ${colorClass}">${digitText}</div>
+      <div class="readout-label">${digitText === '—' ? '' : 'places libres' + (p.capacite ? ' / ' + p.capacite : '')}</div>
+    </div>
+    ${pct !== null ? `<div class="capacity-bar"><div class="capacity-fill" style="width:${pct}%;background:${colorClass === 'red' ? 'var(--red)' : colorClass === 'green' ? 'var(--green)' : 'var(--muted)'}"></div></div>` : ''}
+    <div class="panel-foot">
+      <span class="status-word ${colorClass === 'green' ? 'green' : colorClass === 'red' ? 'red' : 'dim'}">${statusLabel}</span>
+      <details><summary></summary><pre>${escapeHtml(JSON.stringify(p.raw, null, 2))}</pre></details>
+    </div>
+  `;
+  return el;
+}
+
+function escapeHtml(str){
+  return String(str).replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
+}
+
+function renderError(triedUrls, err){
+  panelsEl.innerHTML = '';
+  const el = document.createElement('div');
+  el.className = 'error-panel';
+  el.innerHTML = `
+    <b>Flux inaccessible depuis ce panneau.</b><br><br>
+    Les deux points d'accès testés n'ont pas répondu correctement (${escapeHtml(err && err.message ? err.message : 'erreur réseau')}).
+    Cause la plus probable : la source ne renvoie pas d'en-tête CORS pour un appel direct depuis un navigateur.<br><br>
+    Points testés :<br>
+    ${triedUrls.map(u => `<code>${escapeHtml(u)}</code>`).join('<br>')}<br><br>
+    Vérification rapide : ouvrez l'un de ces liens directement dans Safari. S'il affiche du JSON, la donnée est bonne mais l'appel doit passer par un petit relais (proxy) plutôt que d'être fait directement depuis la page.
+  `;
+  panelsEl.appendChild(el);
+}
+
+async function fetchData(){
+  let lastErr = null;
+  for(const url of ENDPOINTS){
+    try{
+      const res = await fetch(url, {headers:{'Accept':'application/json'}});
+      if(!res.ok) throw new Error('HTTP ' + res.status);
+      const json = await res.json();
+      let rows = [];
+      if(Array.isArray(json.results)) rows = json.results;
+      else if(Array.isArray(json.records)) rows = json.records.map(r => r.fields || r);
+      else if(Array.isArray(json)) rows = json;
+      if(rows.length) return { rows, source: url };
+      throw new Error('Réponse vide');
+    }catch(e){ lastErr = e; }
+  }
+  throw lastErr || new Error('Aucune source disponible');
+}
+
+async function load(isManual){
+  if(isManual) refreshBtn.classList.add('spin');
+  statusEl.textContent = 'Connexion au flux…';
+  try{
+    const { rows } = await fetchData();
+    const parcs = rows.map(normalize).sort((a,b) => {
+      const da = a.dispo === null ? -1 : a.dispo;
+      const db = b.dispo === null ? -1 : b.dispo;
+      return db - da;
+    });
+    panelsEl.innerHTML = '';
+    parcs.forEach(p => panelsEl.appendChild(renderPanel(p)));
+
+    const stamps = parcs.map(p => p.lastupdate ? new Date(p.lastupdate).getTime() : null).filter(Boolean);
+    const dataTime = stamps.length ? new Date(Math.max(...stamps)) : new Date();
+    const offline = !navigator.onLine;
+    statusEl.innerHTML = offline
+      ? `<b>${parcs.length} parcs</b> · hors ligne · dernière donnée ${dataTime.toLocaleTimeString('fr-FR')}`
+      : `<b>${parcs.length} parcs</b> · maj ${dataTime.toLocaleTimeString('fr-FR')}`;
+  }catch(e){
+    renderError(ENDPOINTS, e);
+    statusEl.textContent = 'Flux hors ligne';
+  }finally{
+    setTimeout(() => refreshBtn.classList.remove('spin'), 600);
+  }
+}
+
+refreshBtn.addEventListener('click', () => load(true));
+load(false);
+setInterval(() => load(false), 60000);
+
+if('serviceWorker' in navigator){
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('service-worker.js').catch(() => {});
+  });
+}
+</script>
+</body>
+</html>
