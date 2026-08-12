@@ -1,4 +1,4 @@
-const SHELL_CACHE = 'pr-rennes-shell-v2';
+const SHELL_CACHE = 'pr-rennes-shell-v3';
 const DATA_CACHE = 'pr-rennes-data-v1';
 
 const SHELL_FILES = [
@@ -32,10 +32,11 @@ self.addEventListener('activate', (event) => {
 self.addEventListener('fetch', (event) => {
   const url = new URL(event.request.url);
   const isApiCall = url.hostname.includes('rennesmetropole.fr') || url.hostname.includes('explore.star.fr');
+  const isPredictions = url.pathname.endsWith('predictions.json');
 
-  // Données temps réel : on tente le réseau en priorité, on retombe sur le dernier
-  // relevé connu en cache si l'appareil est hors ligne ou si l'API ne répond pas.
-  if (isApiCall) {
+  // Données temps réel + prévisions : on tente le réseau en priorité, on retombe sur le dernier
+  // relevé connu en cache si l'appareil est hors ligne ou si la source ne répond pas.
+  if (isApiCall || isPredictions) {
     event.respondWith(
       fetch(event.request)
         .then((response) => {
