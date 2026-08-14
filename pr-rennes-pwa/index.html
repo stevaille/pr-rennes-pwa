@@ -6,8 +6,8 @@
 <title>P+R Rennes · places en direct</title>
 
 <link rel="manifest" href="manifest.json">
-<meta name="theme-color" content="#15171b">
-<meta name="background-color" content="#15171b">
+<meta name="theme-color" content="#101114">
+<meta name="background-color" content="#101114">
 
 <link rel="icon" href="favicon.ico" sizes="any">
 <link rel="icon" href="icon-192.png" type="image/png" sizes="192x192">
@@ -23,164 +23,197 @@
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;600;700;800&family=Nunito+Sans:wght@400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
 <style>
   :root{
-    --asphalt:#15171b;
-    --panel:#1d2026;
-    --bezel:#0c0d10;
-    --amber:#ffb300;
-    --green:#3adb76;
-    --red:#ff5252;
-    --ink:#e7e9ee;
-    --muted:#8a93a1;
+    --asphalt:#101114;
+    --surface:#1a1c21;
+    --surface-hi:#23262c;
+    --amber:#ffb13d;
+    --green:#35d48c;
+    --red:#ff6b6b;
+    --ink:#f2f3f5;
+    --muted:#8d95a5;
   }
   *{box-sizing:border-box;}
   html,body{margin:0;padding:0;background:var(--asphalt);color:var(--ink);font-family:'Nunito Sans',sans-serif;-webkit-font-smoothing:antialiased;}
   body{
     background-image:
-      radial-gradient(circle at 20% -10%, rgba(255,179,0,0.07), transparent 40%),
-      repeating-linear-gradient(180deg, rgba(255,255,255,0.015) 0px, rgba(255,255,255,0.015) 1px, transparent 1px, transparent 3px);
+      radial-gradient(circle at 15% -10%, rgba(255,177,61,0.08), transparent 42%),
+      radial-gradient(circle at 100% 0%, rgba(53,212,140,0.05), transparent 40%),
+      repeating-linear-gradient(180deg, rgba(255,255,255,0.012) 0px, rgba(255,255,255,0.012) 1px, transparent 1px, transparent 3px);
+  }
+  @media (prefers-reduced-motion: reduce){
+    *{animation-duration:0.001ms !important;animation-iteration-count:1 !important;transition-duration:0.001ms !important;}
   }
   .scene{
     max-width:640px;margin:0 auto;
-    padding-top:max(24px, env(safe-area-inset-top));
-    padding-right:max(16px, env(safe-area-inset-right));
-    padding-bottom:max(48px, env(safe-area-inset-bottom));
-    padding-left:max(16px, env(safe-area-inset-left));
+    padding-top:max(28px, env(safe-area-inset-top));
+    padding-right:max(18px, env(safe-area-inset-right));
+    padding-bottom:max(56px, env(safe-area-inset-bottom));
+    padding-left:max(18px, env(safe-area-inset-left));
   }
 
-  header{display:flex;align-items:center;gap:10px;margin-bottom:6px;}
+  header{display:flex;align-items:center;gap:11px;margin-bottom:8px;}
   .lines{display:flex;gap:5px;}
-  .line-chip{width:23px;height:23px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-family:'Poppins',sans-serif;font-weight:700;font-size:13px;color:#0c0d10;}
+  .line-chip{width:24px;height:24px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-family:'Poppins',sans-serif;font-weight:700;font-size:13px;color:#0c0d10;}
   .line-a{background:#e2231a;}
   .line-b{background:#00a3c4;}
-  h1{font-family:'Poppins',sans-serif;font-size:21px;font-weight:700;margin:0;letter-spacing:0;}
-  .subtitle{color:var(--muted);font-size:13px;margin:6px 0 22px;line-height:1.55;}
+  h1{font-family:'Poppins',sans-serif;font-size:22px;font-weight:700;margin:0;letter-spacing:-.01em;}
+  .subtitle{color:var(--muted);font-size:13px;margin:8px 0 28px;line-height:1.6;max-width:72ch;}
 
-  .statusbar{display:flex;align-items:center;justify-content:space-between;background:var(--panel);border:1px solid rgba(255,255,255,0.06);border-radius:16px;padding:11px 16px;margin-bottom:18px;font-size:12.5px;color:var(--muted);}
+  .statusbar{
+    display:flex;align-items:center;justify-content:space-between;
+    background:var(--surface);border-radius:18px;padding:13px 18px;margin-bottom:14px;
+    font-size:12.5px;color:var(--muted);
+    box-shadow:0 1px 0 rgba(255,255,255,0.03) inset, 0 10px 24px -14px rgba(0,0,0,0.6);
+  }
   .statusbar b{color:var(--ink);font-weight:700;}
-  #refresh{background:var(--bezel);border:1px solid rgba(255,255,255,0.1);color:var(--amber);width:34px;height:34px;border-radius:11px;font-size:15px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:transform .2s ease;}
+  .statusbar-actions{display:flex;gap:8px;}
+  #refresh, #locate{
+    background:var(--surface-hi);border:none;color:var(--amber);
+    width:36px;height:36px;border-radius:12px;font-size:15px;cursor:pointer;
+    display:flex;align-items:center;justify-content:center;
+    transition:transform .2s ease, background .2s ease, opacity .2s ease;
+  }
+  #locate.active{background:rgba(255,177,61,0.16);}
+  #locate.loading{opacity:.5;}
   #refresh:hover{transform:rotate(90deg);}
-  #refresh:focus-visible{outline:2px solid var(--amber);outline-offset:2px;}
+  #refresh:focus-visible, #locate:focus-visible{outline:2px solid var(--amber);outline-offset:2px;}
   #refresh.spin{animation:spin .6s linear;}
   @keyframes spin{to{transform:rotate(180deg);}}
 
-  #panels{display:flex;flex-direction:column;gap:12px;}
+  #panels{display:flex;flex-direction:column;gap:16px;}
 
   .panel{
-    background:linear-gradient(180deg,var(--panel),#191c22);
-    border:1px solid rgba(255,255,255,0.06);
-    border-radius:20px;
-    padding:18px 18px 14px;
-    box-shadow:inset 0 1px 0 rgba(255,255,255,0.03), 0 8px 20px rgba(0,0,0,0.35);
+    background:var(--surface);
+    border-radius:22px;
+    padding:22px 22px 18px;
+    box-shadow:0 1px 0 rgba(255,255,255,0.03) inset, 0 14px 30px -18px rgba(0,0,0,0.65);
     position:relative;
     overflow:hidden;
+    opacity:0;
+    animation:rise .5s ease forwards;
   }
-  .panel::before{content:'';position:absolute;inset:0;background:repeating-linear-gradient(180deg, rgba(255,255,255,0.02) 0px, transparent 2px, transparent 4px);pointer-events:none;}
+  @keyframes rise{from{opacity:0;transform:translateY(8px);}to{opacity:1;transform:translateY(0);}}
+  .panel::before{content:'';position:absolute;inset:0;background:repeating-linear-gradient(180deg, rgba(255,255,255,0.012) 0px, transparent 2px, transparent 4px);pointer-events:none;}
 
-  .panel-top{display:flex;justify-content:space-between;align-items:flex-start;gap:10px;}
-  .panel-name{font-family:'Poppins',sans-serif;font-weight:600;font-size:15.5px;color:var(--ink);}
-  .panel-tag{font-family:'Nunito Sans',sans-serif;font-size:10.5px;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;margin-top:3px;}
+  .panel-top{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;}
+  .panel-name{font-family:'Poppins',sans-serif;font-weight:600;font-size:16px;color:var(--ink);letter-spacing:-.01em;}
+  .panel-tag{font-family:'Nunito Sans',sans-serif;font-size:11px;color:var(--muted);margin-top:4px;letter-spacing:.02em;}
 
-  .led-lines{font-family:'Space Mono',monospace;font-size:11px;letter-spacing:.1em;color:rgba(255,179,0,0.65);text-align:right;line-height:1.5;white-space:pre;}
+  .panel-top-right{display:flex;align-items:center;gap:10px;}
+  .pin-btn{background:none;border:none;font-size:16px;opacity:.28;cursor:pointer;padding:2px;line-height:1;transition:opacity .15s ease, transform .15s ease;}
+  .pin-btn:active{transform:scale(0.85);}
+  .pin-btn.active{opacity:1;filter:drop-shadow(0 0 5px rgba(255,177,61,.6));}
 
-  .readout{display:flex;align-items:baseline;gap:10px;margin-top:16px;}
-  .digits{font-family:'Space Mono',monospace;font-size:46px;font-weight:700;line-height:1;letter-spacing:0;}
-  .digits.green{color:var(--green);text-shadow:0 0 14px rgba(58,219,118,0.45);}
-  .digits.red{color:var(--red);text-shadow:0 0 14px rgba(255,82,82,0.45);}
-  .digits.amber{color:var(--amber);text-shadow:0 0 14px rgba(255,179,0,0.4);}
+  .status-word{font-family:'Poppins',sans-serif;font-size:10.5px;font-weight:700;letter-spacing:.04em;padding:5px 11px;border-radius:20px;white-space:nowrap;}
+  .status-word.green{background:rgba(53,212,140,0.14);color:var(--green);}
+  .status-word.red{background:rgba(255,107,107,0.14);color:var(--red);}
+  .status-word.dim{background:rgba(141,149,165,0.14);color:var(--muted);}
+
+  .readout{display:flex;align-items:baseline;gap:12px;margin-top:20px;}
+  .digits{font-family:'Space Mono',monospace;font-size:52px;font-weight:700;line-height:1;letter-spacing:-.01em;}
+  .digits.green{color:var(--green);text-shadow:0 0 18px rgba(53,212,140,0.4);}
+  .digits.red{color:var(--red);text-shadow:0 0 18px rgba(255,107,107,0.4);}
   .digits.dim{color:var(--muted);text-shadow:none;}
   .readout-label{font-family:'Nunito Sans',sans-serif;font-size:12.5px;color:var(--muted);font-weight:600;}
 
-  .capacity-bar{height:6px;border-radius:4px;background:rgba(255,255,255,0.06);margin-top:14px;overflow:hidden;}
-  .capacity-fill{height:100%;border-radius:4px;transition:width .4s ease;}
+  .capacity-bar{height:5px;border-radius:3px;background:rgba(255,255,255,0.05);margin-top:16px;overflow:hidden;}
+  .capacity-fill{height:100%;border-radius:3px;transition:width .5s ease;}
 
-  .panel-foot{display:flex;justify-content:space-between;align-items:center;margin-top:12px;}
-  .status-word{font-family:'Poppins',sans-serif;font-size:11px;font-weight:600;letter-spacing:.03em;padding:4px 10px;border-radius:20px;}
-  .status-word.green{background:rgba(58,219,118,0.12);color:var(--green);}
-  .status-word.red{background:rgba(255,82,82,0.12);color:var(--red);}
-  .status-word.dim{background:rgba(138,147,161,0.12);color:var(--muted);}
+  .panel-foot{display:flex;justify-content:space-between;align-items:center;margin-top:18px;gap:12px;}
+  .nav-btn{
+    background:none;border:none;color:var(--amber);
+    font-family:'Poppins',sans-serif;font-weight:600;font-size:13px;
+    padding:9px 4px;cursor:pointer;display:flex;align-items:center;gap:6px;
+    transition:opacity .15s ease, transform .15s ease;
+  }
+  .nav-btn:active{transform:scale(0.96);opacity:.7;}
 
   details{font-size:11px;}
-  details summary{color:var(--muted);cursor:pointer;list-style:none;}
+  details summary{color:var(--muted);cursor:pointer;list-style:none;padding:9px 4px;}
   details summary::-webkit-details-marker{display:none;}
-  details summary:before{content:'· champs bruts';}
-  details[open] summary:before{content:'· masquer';}
-  details pre{margin:8px 0 0;padding:10px;background:var(--bezel);border-radius:10px;color:#9fb0c0;font-family:'Space Mono',monospace;font-size:10.5px;white-space:pre-wrap;word-break:break-all;max-height:160px;overflow:auto;}
+  details summary:before{content:'détails';}
+  details[open] summary:before{content:'masquer';}
+  details pre{margin:10px 0 0;padding:12px;background:var(--asphalt);border-radius:12px;color:#9fb0c0;font-family:'Space Mono',monospace;font-size:10.5px;white-space:pre-wrap;word-break:break-all;max-height:160px;overflow:auto;}
 
-  .skeleton{height:118px;border-radius:20px;background:linear-gradient(90deg, var(--panel) 25%, #23262d 37%, var(--panel) 63%);background-size:400% 100%;animation:shimmer 1.4s ease infinite;}
+  .skeleton{height:132px;border-radius:22px;background:linear-gradient(90deg, var(--surface) 25%, var(--surface-hi) 37%, var(--surface) 63%);background-size:400% 100%;animation:shimmer 1.4s ease infinite;}
   @keyframes shimmer{0%{background-position:100% 0;}100%{background-position:0 0;}}
 
-  .error-panel{border:1px dashed rgba(255,82,82,0.35);border-radius:20px;padding:18px;color:var(--muted);font-size:13px;line-height:1.6;}
+  .error-panel{background:var(--surface);border-radius:22px;padding:20px;color:var(--muted);font-size:13px;line-height:1.6;box-shadow:0 14px 30px -18px rgba(0,0,0,.65);}
   .error-panel b{color:var(--red);}
-  .error-panel code{background:var(--bezel);padding:1px 5px;border-radius:5px;color:var(--amber);font-family:'Space Mono',monospace;font-size:11.5px;}
+  .error-panel code{background:var(--asphalt);padding:2px 6px;border-radius:6px;color:var(--amber);font-family:'Space Mono',monospace;font-size:11.5px;}
 
-  footer{margin-top:24px;text-align:center;font-size:11px;color:var(--muted);line-height:1.6;}
+  footer{margin-top:32px;text-align:center;font-size:11px;color:var(--muted);line-height:1.7;opacity:.8;}
   footer a{color:var(--muted);}
 
-  .forecast{
-    background:linear-gradient(180deg,var(--panel),#191c22);
-    border:1px solid rgba(255,179,0,0.18);
-    border-radius:20px;
-    padding:16px 18px 14px;
-    margin-bottom:18px;
+  .forecast-strip{
+    display:flex;align-items:center;gap:12px;
+    background:var(--surface);border-radius:16px;padding:12px 16px;margin-bottom:6px;
+    box-shadow:0 1px 0 rgba(255,255,255,.03) inset, 0 10px 24px -14px rgba(0,0,0,.6);
   }
-  .forecast-head{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;margin-bottom:2px;}
-  .forecast-title{font-family:'Poppins',sans-serif;font-weight:700;font-size:14px;color:var(--amber);}
-  .forecast-day{font-family:'Nunito Sans',sans-serif;font-size:12px;color:var(--muted);margin-top:3px;text-transform:capitalize;}
+  .forecast-strip-label{font-family:'Poppins',sans-serif;font-weight:700;font-size:13px;color:var(--amber);}
+  #forecast-now{
+    background:var(--surface-hi);border:none;color:var(--amber);
+    font-family:'Poppins',sans-serif;font-weight:600;font-size:11.5px;
+    padding:7px 11px;border-radius:10px;cursor:pointer;white-space:nowrap;
+    margin-left:auto;
+    transition:transform .12s ease, background .12s ease;
+  }
+  #forecast-now:active{transform:scale(0.95);}
   #forecast-time{
-    background:var(--bezel);border:1px solid rgba(255,255,255,0.12);color:var(--ink);
-    font-family:'Space Mono',monospace;font-size:14px;font-weight:700;border-radius:10px;padding:6px 10px;
+    margin-left:auto;
+    background:var(--surface-hi);border:none;color:var(--ink);
+    font-family:'Space Mono',monospace;font-size:14px;font-weight:700;border-radius:11px;padding:7px 12px;
     color-scheme:dark;
   }
   #forecast-time:focus-visible{outline:2px solid var(--amber);outline-offset:2px;}
-  .forecast-empty{font-family:'Nunito Sans',sans-serif;font-size:12.5px;color:var(--muted);padding:10px 0 2px;line-height:1.55;}
-  .forecast-row{display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-top:1px solid rgba(255,255,255,0.05);}
-  .forecast-row:first-child{border-top:none;}
-  .forecast-name{font-family:'Poppins',sans-serif;font-weight:600;font-size:13.5px;}
-  .forecast-range{font-family:'Space Mono',monospace;font-size:13.5px;font-weight:700;}
-  .forecast-range.low{color:var(--red);}
-  .forecast-range.mid{color:var(--amber);}
-  .forecast-range.high{color:var(--green);}
+  .forecast-note{font-family:'Nunito Sans',sans-serif;font-size:11.5px;color:var(--muted);margin:0 4px 16px;line-height:1.5;}
+  .forecast-note:empty{display:none;margin:0;}
+
+  .card-forecast{
+    display:flex;align-items:center;justify-content:space-between;
+    margin-top:12px;padding-top:12px;
+    border-top:1px dashed rgba(255,177,61,.14);
+    font-family:'Nunito Sans',sans-serif;font-size:12px;
+  }
+  .cf-label{color:var(--muted);}
+  .cf-value{font-family:'Space Mono',monospace;font-weight:700;font-size:13px;}
+  .cf-value.low{color:var(--red);}
+  .cf-value.mid{color:var(--amber);}
+  .cf-value.high{color:var(--green);}
+  .cf-value.dim{color:var(--muted);font-family:'Nunito Sans',sans-serif;font-weight:600;font-size:12px;}
   .forecast-samples{font-family:'Nunito Sans',sans-serif;font-size:10.5px;color:var(--muted);margin-left:4px;font-weight:400;}
 
-  .nav-btn{
-    width:100%;margin-top:12px;
-    background:var(--bezel);border:1px solid rgba(255,179,0,0.25);color:var(--amber);
-    font-family:'Poppins',sans-serif;font-weight:600;font-size:13px;
-    padding:11px;border-radius:14px;cursor:pointer;
-    transition:transform .15s ease, background .15s ease;
-  }
-  .nav-btn:active{transform:scale(0.97);background:rgba(255,179,0,0.08);}
-
   .sheet-backdrop{
-    position:fixed;inset:0;background:rgba(0,0,0,0.5);
+    position:fixed;inset:0;background:rgba(6,7,9,0.6);
     opacity:0;pointer-events:none;transition:opacity .25s ease;z-index:40;
   }
   .sheet-backdrop.open{opacity:1;pointer-events:auto;}
   .sheet{
     position:fixed;left:0;right:0;bottom:0;max-width:640px;margin:0 auto;
-    background:linear-gradient(180deg,var(--panel),#191c22);
-    border-top:1px solid rgba(255,255,255,0.08);
-    border-radius:22px 22px 0 0;
-    padding:10px 18px max(18px, env(safe-area-inset-bottom));
+    background:var(--surface);
+    border-radius:26px 26px 0 0;
+    padding:12px 20px max(20px, env(safe-area-inset-bottom));
     transform:translateY(100%);
-    transition:transform .28s cubic-bezier(.32,.72,0,1);
+    transition:transform .3s cubic-bezier(.32,.72,0,1);
     z-index:41;
+    box-shadow:0 -20px 50px -20px rgba(0,0,0,.6);
   }
   .sheet.open{transform:translateY(0);}
-  .sheet-handle{width:36px;height:4px;border-radius:2px;background:rgba(255,255,255,0.15);margin:6px auto 14px;}
-  .sheet-title{font-family:'Poppins',sans-serif;font-weight:700;font-size:14px;color:var(--ink);margin-bottom:12px;text-align:center;}
+  .sheet-handle{width:38px;height:4px;border-radius:2px;background:rgba(255,255,255,0.14);margin:8px auto 16px;}
+  .sheet-title{font-family:'Poppins',sans-serif;font-weight:700;font-size:15px;color:var(--ink);margin-bottom:14px;text-align:center;}
   .sheet-option{
-    display:block;width:100%;text-align:left;background:var(--bezel);
-    border:1px solid rgba(255,255,255,0.06);color:var(--ink);
-    font-family:'Nunito Sans',sans-serif;font-weight:600;font-size:14px;
-    padding:13px 16px;border-radius:14px;margin-bottom:8px;
+    display:block;width:100%;text-align:left;background:var(--surface-hi);
+    border:none;color:var(--ink);
+    font-family:'Nunito Sans',sans-serif;font-weight:600;font-size:14.5px;
+    padding:15px 18px;border-radius:16px;margin-bottom:9px;
     text-decoration:none;cursor:pointer;box-sizing:border-box;
+    transition:transform .12s ease, background .12s ease;
   }
-  .sheet-option:active{background:rgba(255,255,255,0.05);}
+  .sheet-option:active{transform:scale(0.98);background:rgba(255,255,255,0.06);}
   .sheet-cancel{
     display:block;width:100%;text-align:center;background:transparent;border:none;
-    color:var(--muted);font-family:'Poppins',sans-serif;font-weight:600;font-size:13px;
-    padding:12px;cursor:pointer;
+    color:var(--muted);font-family:'Poppins',sans-serif;font-weight:600;font-size:13.5px;
+    padding:14px;cursor:pointer;
   }
 </style>
 </head>
@@ -194,21 +227,17 @@
 
   <div class="statusbar">
     <span id="status-text">Connexion au flux…</span>
-    <button id="refresh" title="Actualiser" aria-label="Actualiser">↻</button>
+    <div class="statusbar-actions">
+      <button id="locate" title="Trier par proximité" aria-label="Trier par proximité">📍</button>
+      <button id="refresh" title="Actualiser" aria-label="Actualiser">↻</button>
+    </div>
   </div>
 
-  <section class="forecast" id="forecast">
-    <div class="forecast-head">
-      <div>
-        <div class="forecast-title">Prévision</div>
-        <div class="forecast-day" id="forecast-day">—</div>
-      </div>
-      <input type="time" id="forecast-time" step="900" value="08:30" aria-label="Heure du créneau">
-    </div>
-    <div id="forecast-body">
-      <div class="forecast-empty">Chargement des prévisions…</div>
-    </div>
-  </section>
+  <div class="forecast-strip" id="forecast">
+    <span class="forecast-strip-label">Prévision pour</span>
+    <input type="time" id="forecast-time" step="900" value="08:30" aria-label="Heure du créneau">
+  </div>
+  <p class="forecast-note" id="forecast-note"></p>
 
   <main id="panels">
     <div class="skeleton"></div>
@@ -217,8 +246,7 @@
   </main>
 
   <footer>
-    Source : Open Data Rennes Métropole — jeu de données <em>tco-parcsrelais-star-etat-tr</em> (Keolis Rennes), rafraîchi côté source toutes les minutes.<br>
-    Actualisation automatique ici toutes les 60 s.
+    Source : Open Data Rennes Métropole - jeu de données <em>tco-parcsrelais-star-etat-tr</em> (Keolis Rennes), rafraîchi toutes les minutes.
   </footer>
 </div>
 
@@ -226,11 +254,10 @@
 <div class="sheet" id="nav-sheet">
   <div class="sheet-handle"></div>
   <div class="sheet-title" id="sheet-title">Itinéraire</div>
-  <a class="sheet-option" id="opt-apple" target="_blank" rel="noopener">🍎 Plans (Apple)</a>
-  <a class="sheet-option" id="opt-google" target="_blank" rel="noopener">🗺️ Google Maps</a>
-  <a class="sheet-option" id="opt-waze" target="_blank" rel="noopener">🚗 Waze</a>
-  <button class="sheet-option" id="opt-roole" type="button">🚙 Roole Map (copier, puis coller dans l'app)</button>
-  <button class="sheet-option" id="opt-copy" type="button">📋 Copier les coordonnées</button>
+  <a class="sheet-option" id="opt-apple" target="_blank" rel="noopener">Plans</a>
+  <a class="sheet-option" id="opt-google" target="_blank" rel="noopener">Google Maps</a>
+  <a class="sheet-option" id="opt-waze" target="_blank" rel="noopener">Waze</a>
+  <button class="sheet-option" id="opt-copy" type="button">Copier les coordonnées</button>
   <button class="sheet-cancel" id="sheet-cancel" type="button">Annuler</button>
 </div>
 
@@ -243,6 +270,89 @@ const ENDPOINTS = [
 const panelsEl = document.getElementById('panels');
 const statusEl = document.getElementById('status-text');
 const refreshBtn = document.getElementById('refresh');
+const locateBtn = document.getElementById('locate');
+const forecastTime = document.getElementById('forecast-time');
+const forecastNote = document.getElementById('forecast-note');
+
+const WEEKDAYS_FR = ['dimanche','lundi','mardi','mercredi','jeudi','vendredi','samedi'];
+const WEEKDAYS_KEY = ['sun','mon','tue','wed','thu','fri','sat'];
+
+function floor15(hhmm){
+  const [h, m] = hhmm.split(':').map(Number);
+  const fm = Math.floor(m / 15) * 15;
+  return `${String(h).padStart(2,'0')}:${String(fm).padStart(2,'0')}`;
+}
+
+let userPos = null;
+let predictionsData = null;
+let lastParcs = [];
+
+function loadSortMode(){
+  try{ return localStorage.getItem('pr-rennes:sort-mode') || 'dispo'; }catch(e){ return 'dispo'; }
+}
+function saveSortMode(v){ try{ localStorage.setItem('pr-rennes:sort-mode', v); }catch(e){} }
+let sortMode = loadSortMode();
+
+function loadPinnedId(){
+  try{ return localStorage.getItem('pr-rennes:pinned-id') || null; }catch(e){ return null; }
+}
+function savePinnedId(v){
+  try{ v ? localStorage.setItem('pr-rennes:pinned-id', v) : localStorage.removeItem('pr-rennes:pinned-id'); }catch(e){}
+}
+let pinnedId = loadPinnedId();
+
+function distanceKm(lat1, lon1, lat2, lon2){
+  const R = 6371;
+  const dLat = (lat2 - lat1) * Math.PI / 180;
+  const dLon = (lon2 - lon1) * Math.PI / 180;
+  const a = Math.sin(dLat/2)**2 + Math.cos(lat1*Math.PI/180)*Math.cos(lat2*Math.PI/180)*Math.sin(dLon/2)**2;
+  return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+}
+function formatDistance(km){
+  return km < 1 ? `${Math.round(km * 1000)} m` : `${km.toFixed(1)} km`;
+}
+
+function renderCardForecast(p){
+  if(!p.idparc || !predictionsData) return '';
+  const parcPred = predictionsData.byParc && predictionsData.byParc[p.idparc];
+  const now = new Date();
+  const slotKey = `${WEEKDAYS_KEY[now.getDay()]}-${floor15(forecastTime.value)}`;
+  const stat = parcPred && parcPred.slots ? parcPred.slots[slotKey] : null;
+
+  if(!stat || stat.samples < 2){
+    return `<div class="card-forecast"><span class="cf-label">Prévision pour ${forecastTime.value}</span><span class="cf-value dim">pas encore de données</span></div>`;
+  }
+  const ratio = p.capacite ? stat.avg / p.capacite : 0.5;
+  const cls = ratio < 0.15 ? 'low' : ratio < 0.35 ? 'mid' : 'high';
+  return `<div class="card-forecast">
+    <span class="cf-label">Prévision ${forecastTime.value}</span>
+    <span class="cf-value ${cls}">≈ ${stat.avg}<span class="forecast-samples">(${stat.min}-${stat.max}, n=${stat.samples})</span></span>
+  </div>`;
+}
+
+function sortParcs(parcs){
+  return [...parcs].sort((a, b) => {
+    const aPinned = a.idparc && a.idparc === pinnedId ? 1 : 0;
+    const bPinned = b.idparc && b.idparc === pinnedId ? 1 : 0;
+    if(aPinned !== bPinned) return bPinned - aPinned;
+
+    if(sortMode === 'distance' && userPos){
+      const da = a.coords ? distanceKm(userPos.lat, userPos.lon, a.coords.lat, a.coords.lon) : Infinity;
+      const db = b.coords ? distanceKm(userPos.lat, userPos.lon, b.coords.lat, b.coords.lon) : Infinity;
+      return da - db;
+    }
+
+    const da2 = a.dispo === null ? -1 : a.dispo;
+    const db2 = b.dispo === null ? -1 : b.dispo;
+    return db2 - da2;
+  });
+}
+
+function renderAll(){
+  if(!lastParcs.length) return;
+  panelsEl.innerHTML = '';
+  sortParcs(lastParcs).forEach((p, i) => panelsEl.appendChild(renderPanel(p, i)));
+}
 
 function pick(row, keys){
   const rowKeys = Object.keys(row);
@@ -281,6 +391,7 @@ function normalize(row){
   const dispo = dispoDirect !== undefined ? Number(dispoDirect) : dispoSum;
 
   return {
+    idparc: pick(row, ['idparc','id_parc','id']) || null,
     nom: pick(row, ['nom','nomparc','nom_parc','name','libelle']) || 'Parc relais',
     etatOuverture: String(pick(row, ['etatouverture','etat_ouverture','etat']) || '').toUpperCase(),
     etatRemplissage: String(pick(row, ['etatremplissage','etat_remplissage']) || '').toUpperCase(),
@@ -300,7 +411,7 @@ function normalize(row){
   };
 }
 
-function renderPanel(p){
+function renderPanel(p, index){
   const ferme = p.etatOuverture.includes('FERM');
   const complet = p.etatRemplissage.includes('COMPLET');
   let colorClass, statusLabel;
@@ -311,28 +422,38 @@ function renderPanel(p){
 
   const digitText = ferme ? '—' : (p.dispo !== null && !Number.isNaN(p.dispo) ? p.dispo : '—');
   const pct = (p.capacite && p.dispo !== null) ? Math.max(0, Math.min(100, Math.round((p.dispo / p.capacite) * 100))) : null;
-  const ledLines = [p.ligne1, p.ligne2].filter(Boolean).join('\n');
+
+  const isPinned = p.idparc && p.idparc === pinnedId;
+  const distanceText = (userPos && p.coords)
+    ? ` · ${formatDistance(distanceKm(userPos.lat, userPos.lon, p.coords.lat, p.coords.lon))}`
+    : '';
+
+  const cardForecast = renderCardForecast(p);
 
   const el = document.createElement('div');
   el.className = 'panel';
+  if(typeof index === 'number') el.style.animationDelay = `${Math.min(index, 8) * 45}ms`;
   el.innerHTML = `
     <div class="panel-top">
       <div>
         <div class="panel-name">${escapeHtml(p.nom)}</div>
-        <div class="panel-tag">Parc relais · Réseau STAR</div>
+        <div class="panel-tag">Parc relais · Réseau STAR${distanceText}</div>
       </div>
-      ${ledLines ? `<div class="led-lines">${escapeHtml(ledLines)}</div>` : ''}
+      <div class="panel-top-right">
+        <span class="status-word ${colorClass === 'green' ? 'green' : colorClass === 'red' ? 'red' : 'dim'}">${statusLabel}</span>
+        ${p.idparc ? `<button class="pin-btn ${isPinned ? 'active' : ''}" data-idparc="${escapeHtml(p.idparc)}" aria-label="Épingler ce parc">⭐️</button>` : ''}
+      </div>
     </div>
     <div class="readout">
       <div class="digits ${colorClass}">${digitText}</div>
       <div class="readout-label">${digitText === '—' ? '' : 'places libres' + (p.capacite ? ' / ' + p.capacite : '')}</div>
     </div>
     ${pct !== null ? `<div class="capacity-bar"><div class="capacity-fill" style="width:${pct}%;background:${colorClass === 'red' ? 'var(--red)' : colorClass === 'green' ? 'var(--green)' : 'var(--muted)'}"></div></div>` : ''}
+    ${cardForecast}
     <div class="panel-foot">
-      <span class="status-word ${colorClass === 'green' ? 'green' : colorClass === 'red' ? 'red' : 'dim'}">${statusLabel}</span>
+      ${p.coords ? `<button class="nav-btn" data-lat="${p.coords.lat}" data-lon="${p.coords.lon}" data-nom="${escapeHtml(p.nom)}">📍 Itinéraire</button>` : '<span></span>'}
       <details><summary></summary><pre>${escapeHtml(JSON.stringify(p.raw, null, 2))}</pre></details>
     </div>
-    ${p.coords ? `<button class="nav-btn" data-lat="${p.coords.lat}" data-lon="${p.coords.lon}" data-nom="${escapeHtml(p.nom)}">📍 Itinéraire</button>` : ''}
   `;
   return el;
 }
@@ -379,13 +500,10 @@ async function load(isManual){
   statusEl.textContent = 'Connexion au flux…';
   try{
     const { rows } = await fetchData();
-    const parcs = rows.map(normalize).sort((a,b) => {
-      const da = a.dispo === null ? -1 : a.dispo;
-      const db = b.dispo === null ? -1 : b.dispo;
-      return db - da;
-    });
+    lastParcs = rows.map(normalize);
+    const parcs = sortParcs(lastParcs);
     panelsEl.innerHTML = '';
-    parcs.forEach(p => panelsEl.appendChild(renderPanel(p)));
+    parcs.forEach((p, i) => panelsEl.appendChild(renderPanel(p, i)));
 
     const stamps = parcs.map(p => p.lastupdate ? new Date(p.lastupdate).getTime() : null).filter(Boolean);
     const dataTime = stamps.length ? new Date(Math.max(...stamps)) : new Date();
@@ -405,19 +523,6 @@ refreshBtn.addEventListener('click', () => load(true));
 load(false);
 setInterval(() => load(false), 60000);
 
-const forecastBody = document.getElementById('forecast-body');
-const forecastDay = document.getElementById('forecast-day');
-const forecastTime = document.getElementById('forecast-time');
-
-const WEEKDAYS_FR = ['dimanche','lundi','mardi','mercredi','jeudi','vendredi','samedi'];
-const WEEKDAYS_KEY = ['sun','mon','tue','wed','thu','fri','sat'];
-
-function floor15(hhmm){
-  const [h, m] = hhmm.split(':').map(Number);
-  const fm = Math.floor(m / 15) * 15;
-  return `${String(h).padStart(2,'0')}:${String(fm).padStart(2,'0')}`;
-}
-
 function loadTargetTime(){
   try{ return localStorage.getItem('pr-rennes:target-time') || '08:30'; }
   catch(e){ return '08:30'; }
@@ -428,48 +533,22 @@ function saveTargetTime(v){
 
 forecastTime.value = loadTargetTime();
 
-function renderForecast(data, weekdayIdx){
-  const slotKey = `${WEEKDAYS_KEY[weekdayIdx]}-${floor15(forecastTime.value)}`;
-  const entries = Object.values(data.byParc || {})
-    .map(p => ({ nom: p.nom, capacite: p.capacite, stat: p.slots ? p.slots[slotKey] : null }))
-    .sort((a, b) => (b.stat ? b.stat.avg : -1) - (a.stat ? a.stat.avg : -1));
-
-  if(!entries.length){
-    forecastBody.innerHTML = `<div class="forecast-empty">Prévisions pas encore disponibles.</div>`;
-    return;
-  }
-
-  const days = data.daysOfHistory || 0;
-  const banner = days < 10
-    ? `<div class="forecast-empty">Historique en cours de constitution (${days} jour${days > 1 ? 's' : ''} de collecte). Les prévisions s'affinent au fil des semaines.</div>`
-    : '';
-
-  forecastBody.innerHTML = banner + entries.map(e => {
-    if(!e.stat || e.stat.samples < 2){
-      return `<div class="forecast-row"><span class="forecast-name">${escapeHtml(e.nom)}</span><span class="forecast-range" style="color:var(--muted)">pas encore de données</span></div>`;
-    }
-    const ratio = e.capacite ? e.stat.avg / e.capacite : 0.5;
-    const cls = ratio < 0.15 ? 'low' : ratio < 0.35 ? 'mid' : 'high';
-    return `<div class="forecast-row">
-      <span class="forecast-name">${escapeHtml(e.nom)}</span>
-      <span class="forecast-range ${cls}">≈ ${e.stat.avg}<span class="forecast-samples">(${e.stat.min}-${e.stat.max}, n=${e.stat.samples})</span></span>
-    </div>`;
-  }).join('');
-}
+const PREDICTIONS_URL = 'https://cdn.jsdelivr.net/gh/stevaille/pr-rennes@data/predictions.json';
 
 async function loadForecast(){
-  const now = new Date();
-  const weekdayIdx = now.getDay();
-  forecastDay.textContent = `Aujourd'hui ${WEEKDAYS_FR[weekdayIdx]} · créneau ${forecastTime.value}`;
-
   try{
-    const res = await fetch('predictions.json', { headers: { Accept: 'application/json' } });
+    const res = await fetch(PREDICTIONS_URL, { headers: { Accept: 'application/json' } });
     if(!res.ok) throw new Error('HTTP ' + res.status);
-    const data = await res.json();
-    renderForecast(data, weekdayIdx);
+    predictionsData = await res.json();
+    const days = predictionsData.daysOfHistory || 0;
+    forecastNote.textContent = days < 10
+      ? `Historique en cours de constitution (${days} jour${days > 1 ? 's' : ''} de collecte). Les prévisions s'affinent au fil des semaines.`
+      : '';
   }catch(e){
-    forecastBody.innerHTML = `<div class="forecast-empty">Prévisions pas encore disponibles pour l'instant, la collecte vient de démarrer.</div>`;
+    predictionsData = null;
+    forecastNote.textContent = '';
   }
+  renderAll();
 }
 
 forecastTime.addEventListener('change', () => {
@@ -485,11 +564,10 @@ const sheetTitle = document.getElementById('sheet-title');
 const optApple = document.getElementById('opt-apple');
 const optGoogle = document.getElementById('opt-google');
 const optWaze = document.getElementById('opt-waze');
-const optRoole = document.getElementById('opt-roole');
 const optCopy = document.getElementById('opt-copy');
 const sheetCancel = document.getElementById('sheet-cancel');
 
-function copyCoords(lat, lon, btn, resetLabel){
+function copyCoords(lat, lon, btn){
   const text = `${lat},${lon}`;
   if(navigator.clipboard && navigator.clipboard.writeText){
     navigator.clipboard.writeText(text).then(() => {
@@ -506,9 +584,7 @@ function openNavSheet(lat, lon, nom){
   optApple.href = `https://maps.apple.com/?daddr=${lat},${lon}&dirflg=d`;
   optGoogle.href = `https://www.google.com/maps/dir/?api=1&destination=${lat},${lon}&travelmode=driving`;
   optWaze.href = `https://waze.com/ul?ll=${lat},${lon}&navigate=yes`;
-  optRoole.textContent = "🚙 Roole Map (copier, puis coller dans l'app)";
-  optRoole.onclick = () => copyCoords(lat, lon, optRoole);
-  optCopy.textContent = '📋 Copier les coordonnées';
+  optCopy.textContent = 'Copier les coordonnées';
   optCopy.onclick = () => copyCoords(lat, lon, optCopy);
   sheetBackdrop.classList.add('open');
   navSheet.classList.add('open');
@@ -526,11 +602,59 @@ optGoogle.addEventListener('click', () => setTimeout(closeNavSheet, 300));
 optWaze.addEventListener('click', () => setTimeout(closeNavSheet, 300));
 
 panelsEl.addEventListener('click', (e) => {
-  const btn = e.target.closest('.nav-btn');
-  if(!btn) return;
-  const { lat, lon, nom } = btn.dataset;
-  if(lat && lon) openNavSheet(lat, lon, nom);
+  const navBtn = e.target.closest('.nav-btn');
+  if(navBtn){
+    const { lat, lon, nom } = navBtn.dataset;
+    if(lat && lon) openNavSheet(lat, lon, nom);
+    return;
+  }
+  const pinBtn = e.target.closest('.pin-btn');
+  if(pinBtn){
+    const id = pinBtn.dataset.idparc;
+    pinnedId = (pinnedId === id) ? null : id;
+    savePinnedId(pinnedId);
+    renderAll();
+  }
 });
+
+function requestLocation(){
+  if(!('geolocation' in navigator)){
+    alert("La géolocalisation n'est pas disponible sur cet appareil.");
+    return;
+  }
+  locateBtn.classList.add('loading');
+  navigator.geolocation.getCurrentPosition(
+    (pos) => {
+      userPos = { lat: pos.coords.latitude, lon: pos.coords.longitude };
+      sortMode = 'distance';
+      saveSortMode(sortMode);
+      locateBtn.classList.remove('loading');
+      locateBtn.classList.add('active');
+      renderAll();
+    },
+    () => {
+      locateBtn.classList.remove('loading');
+      alert("Localisation refusée ou indisponible. Tu peux l'autoriser dans Réglages > Safari > Position.");
+    },
+    { enableHighAccuracy: false, timeout: 8000, maximumAge: 300000 }
+  );
+}
+
+locateBtn.addEventListener('click', () => {
+  if(sortMode === 'distance'){
+    sortMode = 'dispo';
+    saveSortMode(sortMode);
+    locateBtn.classList.remove('active');
+    renderAll();
+    return;
+  }
+  requestLocation();
+});
+
+if(sortMode === 'distance'){
+  locateBtn.classList.add('active');
+  requestLocation();
+}
 
 if('serviceWorker' in navigator){
   window.addEventListener('load', () => {
