@@ -28,17 +28,18 @@ jobs:
         run: node .github/scripts/aggregate.mjs
         env:
           DATA_DIR: ../datastore/data
-          OUTPUT_FILE: pr-rennes-pwa/predictions.json
+          OUTPUT_FILE: ../datastore/predictions.json
 
-      - name: Publier si changement
-        working-directory: site
+      - name: Publier sur la branche data (aucun coût Netlify)
+        working-directory: datastore
         run: |
           git config user.name "pr-rennes-bot"
           git config user.email "actions@users.noreply.github.com"
-          git add pr-rennes-pwa/predictions.json
+          git add predictions.json
           if ! git diff --quiet --cached; then
             git commit -m "Prévisions $(date -u +'%Y-%m-%d')"
             git push
+            curl -s "https://purge.jsdelivr.net/gh/${{ github.repository }}@data/predictions.json" || true
           else
             echo "Rien de nouveau à committer."
           fi
