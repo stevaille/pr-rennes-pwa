@@ -43,6 +43,24 @@
   @media (prefers-reduced-motion: reduce){
     *{animation-duration:0.001ms !important;animation-iteration-count:1 !important;transition-duration:0.001ms !important;}
   }
+
+  .update-banner{
+    position:fixed;top:0;left:0;right:0;max-width:640px;margin:0 auto;
+    display:flex;align-items:center;justify-content:space-between;gap:12px;
+    background:var(--amber);color:#101114;
+    padding:max(12px, env(safe-area-inset-top)) 18px 12px;
+    transform:translateY(-100%);
+    transition:transform .3s cubic-bezier(.32,.72,0,1);
+    z-index:50;
+    font-family:'Poppins',sans-serif;font-weight:600;font-size:13px;
+  }
+  .update-banner.show{transform:translateY(0);}
+  .update-banner button{
+    background:#101114;color:var(--amber);border:none;border-radius:10px;
+    padding:8px 14px;font-family:'Poppins',sans-serif;font-weight:700;font-size:12.5px;cursor:pointer;
+    white-space:nowrap;
+  }
+
   .scene{
     max-width:640px;margin:0 auto;
     padding-top:max(28px, env(safe-area-inset-top));
@@ -65,20 +83,16 @@
     font-size:12.5px;color:var(--muted);
     box-shadow:0 1px 0 rgba(255,255,255,0.03) inset, 0 10px 24px -14px rgba(0,0,0,0.6);
   }
-  .statusbar b{color:var(--ink);font-weight:700;}
+  .statusbar b{font-family:'Poppins',sans-serif;font-weight:700;font-size:13px;color:var(--ink);}
   .statusbar-actions{display:flex;gap:8px;}
-  #refresh, #locate{
+  #locate{
     background:var(--surface-hi);border:none;color:var(--amber);
     width:36px;height:36px;border-radius:12px;font-size:15px;cursor:pointer;
     display:flex;align-items:center;justify-content:center;
     transition:transform .2s ease, background .2s ease, opacity .2s ease;
   }
-  #locate.active{background:rgba(255,177,61,0.16);}
+  #locate.active{background:var(--surface-hi);}
   #locate.loading{opacity:.5;}
-  #refresh:hover{transform:rotate(90deg);}
-  #refresh:focus-visible, #locate:focus-visible{outline:2px solid var(--amber);outline-offset:2px;}
-  #refresh.spin{animation:spin .6s linear;}
-  @keyframes spin{to{transform:rotate(180deg);}}
 
   #panels{display:flex;flex-direction:column;gap:16px;}
 
@@ -121,17 +135,17 @@
 
   .panel-foot{display:flex;justify-content:space-between;align-items:center;margin-top:18px;gap:12px;}
   .nav-btn{
-    background:none;border:none;color:var(--amber);
-    font-family:'Poppins',sans-serif;font-weight:600;font-size:13px;
-    padding:9px 4px;cursor:pointer;display:flex;align-items:center;gap:6px;
-    transition:opacity .15s ease, transform .15s ease;
+    background:var(--surface-hi);border:none;color:var(--ink);
+    font-family:'Poppins',sans-serif;font-weight:600;font-size:11px;
+    padding:9px 14px;border-radius:11px;cursor:pointer;display:flex;align-items:center;gap:6px;
+    transition:opacity .15s ease, transform .15s ease, background .15s ease;
   }
   .nav-btn:active{transform:scale(0.96);opacity:.7;}
 
   details{font-size:11px;}
   details summary{color:var(--muted);cursor:pointer;list-style:none;padding:9px 4px;}
   details summary::-webkit-details-marker{display:none;}
-  details summary:before{content:'détails';}
+  details summary:before{content:'';}
   details[open] summary:before{content:'masquer';}
   details pre{margin:10px 0 0;padding:12px;background:var(--asphalt);border-radius:12px;color:#9fb0c0;font-family:'Space Mono',monospace;font-size:10.5px;white-space:pre-wrap;word-break:break-all;max-height:160px;overflow:auto;}
 
@@ -150,9 +164,9 @@
     background:var(--surface);border-radius:16px;padding:12px 16px;margin-bottom:6px;
     box-shadow:0 1px 0 rgba(255,255,255,.03) inset, 0 10px 24px -14px rgba(0,0,0,.6);
   }
-  .forecast-strip-label{font-family:'Poppins',sans-serif;font-weight:700;font-size:13px;color:var(--amber);}
+  .forecast-strip-label{font-family:'Poppins',sans-serif;font-weight:700;font-size:13px;color:var(--ink);}
   #forecast-now{
-    background:var(--surface-hi);border:none;color:var(--amber);
+    background:var(--surface-hi);border:none;color:var(--ink);
     font-family:'Poppins',sans-serif;font-weight:600;font-size:11.5px;
     padding:7px 11px;border-radius:10px;cursor:pointer;white-space:nowrap;
     margin-left:auto;
@@ -160,9 +174,10 @@
   }
   #forecast-now:active{transform:scale(0.95);}
   #forecast-time{
-    margin-left:auto;
     background:var(--surface-hi);border:none;color:var(--ink);
-    font-family:'Space Mono',monospace;font-size:14px;font-weight:700;border-radius:11px;padding:7px 12px;
+    font-family:'Poppins',sans-serif;font-weight:600;font-size:11.5px;
+    padding:7px 11px;border-radius:10px;cursor:pointer;white-space:nowrap;
+    transition:transform .12s ease, background .12s ease;
     color-scheme:dark;
   }
   #forecast-time:focus-visible{outline:2px solid var(--amber);outline-offset:2px;}
@@ -170,9 +185,9 @@
   .forecast-note:empty{display:none;margin:0;}
 
   .card-forecast{
-    display:flex;align-items:center;justify-content:space-between;
-    margin-top:12px;padding-top:12px;
-    border-top:1px dashed rgba(255,177,61,.14);
+    display:flex;align-items:center;gap:6px;
+    margin-top:8px;padding-top:8px;
+    margin-bottom:8px;padding-bottom:8px;
     font-family:'Nunito Sans',sans-serif;font-size:12px;
   }
   .cf-label{color:var(--muted);}
@@ -218,24 +233,28 @@
 </style>
 </head>
 <body>
+<div class="update-banner" id="update-banner">
+  <span>Nouvelle version disponible</span>
+  <button id="update-reload" type="button">Actualiser</button>
+</div>
 <div class="scene">
   <header>
     <div class="lines"><div class="line-chip line-a">A</div><div class="line-chip line-b">B</div></div>
     <h1>P+R Rennes</h1>
   </header>
-  <p class="subtitle">Places disponibles dans les parcs-relais du réseau STAR, lues en direct sur les panneaux d'affichage à l'entrée de chaque parc.</p>
+  <p class="subtitle">Places disponibles dans les parcs-relais du réseau STAR.</p>
 
   <div class="statusbar">
     <span id="status-text">Connexion au flux…</span>
     <div class="statusbar-actions">
       <button id="locate" title="Trier par proximité" aria-label="Trier par proximité">📍</button>
-      <button id="refresh" title="Actualiser" aria-label="Actualiser">↻</button>
     </div>
   </div>
 
   <div class="forecast-strip" id="forecast">
     <span class="forecast-strip-label">Prévision pour</span>
-    <input type="time" id="forecast-time" step="900" value="08:30" aria-label="Heure du créneau">
+    <button id="forecast-now" type="button" title="Revenir à l'heure actuelle">Maintenant</button>
+    <input type="time" id="forecast-time" step="900" value="08:30" aria-label="Heure du créneau par défaut">
   </div>
   <p class="forecast-note" id="forecast-note"></p>
 
@@ -246,7 +265,7 @@
   </main>
 
   <footer>
-    Source : Open Data Rennes Métropole - jeu de données <em>tco-parcsrelais-star-etat-tr</em> (Keolis Rennes), rafraîchi toutes les minutes.
+    Source : Open Data Rennes Métropole - jeu de données <em>tco-parcsrelais-star-etat-tr</em> (Keolis Rennes).<br>Rafraîchissement toutes les minutes.</br>
   </footer>
 </div>
 
@@ -269,7 +288,6 @@ const ENDPOINTS = [
 
 const panelsEl = document.getElementById('panels');
 const statusEl = document.getElementById('status-text');
-const refreshBtn = document.getElementById('refresh');
 const locateBtn = document.getElementById('locate');
 const forecastTime = document.getElementById('forecast-time');
 const forecastNote = document.getElementById('forecast-note');
@@ -313,21 +331,20 @@ function formatDistance(km){
 }
 
 function renderCardForecast(p){
-  if(!p.idparc || !predictionsData) return '';
-  const parcPred = predictionsData.byParc && predictionsData.byParc[p.idparc];
+  if(!p.idparc) return '';
+  const label = `<span class="cf-label">Prévision pour ${forecastTime.value} :</span>`;
+
+  const parcPred = predictionsData && predictionsData.byParc ? predictionsData.byParc[p.idparc] : null;
   const now = new Date();
   const slotKey = `${WEEKDAYS_KEY[now.getDay()]}-${floor15(forecastTime.value)}`;
   const stat = parcPred && parcPred.slots ? parcPred.slots[slotKey] : null;
 
   if(!stat || stat.samples < 2){
-    return `<div class="card-forecast"><span class="cf-label">Prévision pour ${forecastTime.value}</span><span class="cf-value dim">pas encore de données</span></div>`;
+    return `<div class="card-forecast">${label} <span class="cf-value dim">Pas encore de données</span></div>`;
   }
   const ratio = p.capacite ? stat.avg / p.capacite : 0.5;
   const cls = ratio < 0.15 ? 'low' : ratio < 0.35 ? 'mid' : 'high';
-  return `<div class="card-forecast">
-    <span class="cf-label">Prévision ${forecastTime.value}</span>
-    <span class="cf-value ${cls}">≈ ${stat.avg}<span class="forecast-samples">(${stat.min}-${stat.max}, n=${stat.samples})</span></span>
-  </div>`;
+  return `<div class="card-forecast">${label} <span class="cf-value ${cls}">≈ ${stat.avg}<span class="forecast-samples">(${stat.min}-${stat.max}, n=${stat.samples})</span></span></div>`;
 }
 
 function sortParcs(parcs){
@@ -425,7 +442,7 @@ function renderPanel(p, index){
 
   const isPinned = p.idparc && p.idparc === pinnedId;
   const distanceText = (userPos && p.coords)
-    ? ` · ${formatDistance(distanceKm(userPos.lat, userPos.lon, p.coords.lat, p.coords.lon))}`
+    ? `${formatDistance(distanceKm(userPos.lat, userPos.lon, p.coords.lat, p.coords.lon))}`
     : '';
 
   const cardForecast = renderCardForecast(p);
@@ -437,7 +454,7 @@ function renderPanel(p, index){
     <div class="panel-top">
       <div>
         <div class="panel-name">${escapeHtml(p.nom)}</div>
-        <div class="panel-tag">Parc relais · Réseau STAR${distanceText}</div>
+        <div class="panel-tag">${distanceText}</div>
       </div>
       <div class="panel-top-right">
         <span class="status-word ${colorClass === 'green' ? 'green' : colorClass === 'red' ? 'red' : 'dim'}">${statusLabel}</span>
@@ -451,7 +468,7 @@ function renderPanel(p, index){
     ${pct !== null ? `<div class="capacity-bar"><div class="capacity-fill" style="width:${pct}%;background:${colorClass === 'red' ? 'var(--red)' : colorClass === 'green' ? 'var(--green)' : 'var(--muted)'}"></div></div>` : ''}
     ${cardForecast}
     <div class="panel-foot">
-      ${p.coords ? `<button class="nav-btn" data-lat="${p.coords.lat}" data-lon="${p.coords.lon}" data-nom="${escapeHtml(p.nom)}">📍 Itinéraire</button>` : '<span></span>'}
+      ${p.coords ? `<button class="nav-btn" data-lat="${p.coords.lat}" data-lon="${p.coords.lon}" data-nom="${escapeHtml(p.nom)}">Itinéraire</button>` : '<span></span>'}
       <details><summary></summary><pre>${escapeHtml(JSON.stringify(p.raw, null, 2))}</pre></details>
     </div>
   `;
@@ -495,8 +512,7 @@ async function fetchData(){
   throw lastErr || new Error('Aucune source disponible');
 }
 
-async function load(isManual){
-  if(isManual) refreshBtn.classList.add('spin');
+async function load(){
   statusEl.textContent = 'Connexion au flux…';
   try{
     const { rows } = await fetchData();
@@ -514,14 +530,11 @@ async function load(isManual){
   }catch(e){
     renderError(ENDPOINTS, e);
     statusEl.textContent = 'Flux hors ligne';
-  }finally{
-    setTimeout(() => refreshBtn.classList.remove('spin'), 600);
   }
 }
 
-refreshBtn.addEventListener('click', () => load(true));
-load(false);
-setInterval(() => load(false), 60000);
+load();
+setInterval(load, 60000);
 
 function loadTargetTime(){
   try{ return localStorage.getItem('pr-rennes:target-time') || '08:30'; }
@@ -542,7 +555,7 @@ async function loadForecast(){
     predictionsData = await res.json();
     const days = predictionsData.daysOfHistory || 0;
     forecastNote.textContent = days < 10
-      ? `Historique en cours de constitution (${days} jour${days > 1 ? 's' : ''} de collecte). Les prévisions s'affinent au fil des semaines.`
+      ? `Historique en cours de constitution (${days} jour${days > 1 ? 's' : ''} de collecte).`
       : '';
   }catch(e){
     predictionsData = null;
@@ -554,6 +567,14 @@ async function loadForecast(){
 forecastTime.addEventListener('change', () => {
   saveTargetTime(forecastTime.value);
   loadForecast();
+});
+
+const forecastNowBtn = document.getElementById('forecast-now');
+forecastNowBtn.addEventListener('click', () => {
+  const now = new Date();
+  forecastTime.value = `${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}`;
+  saveTargetTime(forecastTime.value);
+  renderAll();
 });
 
 loadForecast();
@@ -656,9 +677,29 @@ if(sortMode === 'distance'){
   requestLocation();
 }
 
+const updateBanner = document.getElementById('update-banner');
+const updateReloadBtn = document.getElementById('update-reload');
+updateReloadBtn.addEventListener('click', () => window.location.reload());
+
 if('serviceWorker' in navigator){
+  let hadControllerAlready = !!navigator.serviceWorker.controller;
+
   window.addEventListener('load', () => {
-    navigator.serviceWorker.register('service-worker.js').catch(() => {});
+    navigator.serviceWorker.register('service-worker.js').then((reg) => {
+      reg.update();
+      document.addEventListener('visibilitychange', () => {
+        if(document.visibilityState === 'visible') reg.update();
+      });
+    }).catch(() => {});
+  });
+
+  navigator.serviceWorker.addEventListener('controllerchange', () => {
+    if(!hadControllerAlready){
+      // Toute première activation du service worker, pas une mise à jour : rien à signaler.
+      hadControllerAlready = true;
+      return;
+    }
+    updateBanner.classList.add('show');
   });
 }
 </script>
