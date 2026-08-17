@@ -86,12 +86,12 @@
   .statusbar b{font-family:'Poppins',sans-serif;font-weight:700;font-size:13px;color:var(--ink);}
   .statusbar-actions{display:flex;gap:8px;}
   #locate{
-    background:var(--surface-hi);border:none;color:var(--amber);
+    background:var(--surface-hi);border:none;color:var(--muted);
     width:36px;height:36px;border-radius:12px;font-size:15px;cursor:pointer;
     display:flex;align-items:center;justify-content:center;
     transition:transform .2s ease, background .2s ease, opacity .2s ease;
   }
-  #locate.active{background:var(--surface-hi);}
+  #locate.active{background:var(--ink);color:#101114;}
   #locate.loading{opacity:.5;}
 
   #panels{display:flex;flex-direction:column;gap:16px;}
@@ -160,25 +160,27 @@
   footer a{color:var(--muted);}
 
   .forecast-strip{
-    display:flex;align-items:center;gap:12px;
+    display:flex;flex-direction:column;gap:10px;
     background:var(--surface);border-radius:16px;padding:12px 16px;margin-bottom:6px;
     box-shadow:0 1px 0 rgba(255,255,255,.03) inset, 0 10px 24px -14px rgba(0,0,0,.6);
   }
-  .forecast-strip-label{font-family:'Poppins',sans-serif;font-weight:700;font-size:13px;color:var(--ink);}
-  #forecast-now{
-    background:var(--surface-hi);border:none;color:var(--ink);
+  .forecast-strip-row{display:flex;align-items:center;gap:12px;}
+  .day-toggle{display:flex;background:var(--surface-hi);border-radius:10px;padding:3px;gap:2px;margin-left:auto;}
+  .day-btn{
+    background:none;border:none;color:var(--muted);
     font-family:'Poppins',sans-serif;font-weight:600;font-size:11.5px;
-    padding:7px 11px;border-radius:10px;cursor:pointer;white-space:nowrap;
-    margin-left:auto;
-    transition:transform .12s ease, background .12s ease;
+    padding:6px 12px;border-radius:8px;cursor:pointer;
+    transition:background .15s ease, color .15s ease;
   }
-  #forecast-now:active{transform:scale(0.95);}
+  .day-btn.active{background:var(--ink);color:#101114;}
+  .forecast-strip-label{font-family:'Poppins',sans-serif;font-weight:700;font-size:13px;color:var(--ink);}
   #forecast-time{
-    background:var(--surface-hi);border:none;color:var(--ink);
+    -webkit-appearance:none;appearance:none;
+    background:var(--ink);color:#101114;border:none;outline:none;box-shadow:none;
     font-family:'Poppins',sans-serif;font-weight:600;font-size:11.5px;
-    padding:7px 11px;border-radius:10px;cursor:pointer;white-space:nowrap;
+    padding:6px 10px;border-radius:10px;cursor:pointer;white-space:nowrap;
     transition:transform .12s ease, background .12s ease;
-    color-scheme:dark;
+    color-scheme:light;
   }
   #forecast-time:focus-visible{outline:2px solid var(--amber);outline-offset:2px;}
   .forecast-note{font-family:'Nunito Sans',sans-serif;font-size:11.5px;color:var(--muted);margin:0 4px 16px;line-height:1.5;}
@@ -252,9 +254,14 @@
   </div>
 
   <div class="forecast-strip" id="forecast">
-    <span class="forecast-strip-label">Prévision pour</span>
-    <button id="forecast-now" type="button" title="Revenir à l'heure actuelle">Maintenant</button>
-    <input type="time" id="forecast-time" step="900" value="08:30" aria-label="Heure du créneau par défaut">
+    <div class="forecast-strip-row">
+      <span class="forecast-strip-label">Prévision pour</span>
+      <div class="day-toggle">
+        <button class="day-btn active" data-offset="0" type="button">Maintenant</button>
+        <button class="day-btn" data-offset="1" type="button">Demain</button>
+      </div>
+      <input type="time" id="forecast-time" step="900" value="08:30" aria-label="Heure du créneau par défaut">
+    </div>
   </div>
   <p class="forecast-note" id="forecast-note"></p>
 
@@ -330,13 +337,17 @@ function formatDistance(km){
   return km < 1 ? `${Math.round(km * 1000)} m` : `${km.toFixed(1)} km`;
 }
 
+let dayOffset = 0; // 0 = aujourd'hui, 1 = demain
+
 function renderCardForecast(p){
   if(!p.idparc) return '';
-  const label = `<span class="cf-label">Prévision pour ${forecastTime.value} :</span>`;
+  const dayWord = dayOffset === 1 ? 'demain ' : '';
+  const label = `<span class="cf-label">Prévision pour ${dayWord}${forecastTime.value} :</span>`;
 
   const parcPred = predictionsData && predictionsData.byParc ? predictionsData.byParc[p.idparc] : null;
-  const now = new Date();
-  const slotKey = `${WEEKDAYS_KEY[now.getDay()]}-${floor15(forecastTime.value)}`;
+  const target = new Date();
+  target.setDate(target.getDate() + dayOffset);
+  const slotKey = `${WEEKDAYS_KEY[target.getDay()]}-${floor15(forecastTime.value)}`;
   const stat = parcPred && parcPred.slots ? parcPred.slots[slotKey] : null;
 
   if(!stat || stat.samples < 2){
@@ -546,7 +557,7 @@ function saveTargetTime(v){
 
 forecastTime.value = loadTargetTime();
 
-const PREDICTIONS_URL = 'https://cdn.jsdelivr.net/gh/stevaille/pr-rennes@data/predictions.json';
+const PREDICTIONS_URL = 'https://cdn.jsdelivr.net/gh/stevaille/pr-rennes-pwa@data/predictions.json';
 
 async function loadForecast(){
   try{
@@ -569,12 +580,24 @@ forecastTime.addEventListener('change', () => {
   loadForecast();
 });
 
-const forecastNowBtn = document.getElementById('forecast-now');
-forecastNowBtn.addEventListener('click', () => {
-  const now = new Date();
-  forecastTime.value = `${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}`;
-  saveTargetTime(forecastTime.value);
+const dayButtons = document.querySelectorAll('.day-btn');
+
+function setDayOffset(offset){
+  dayOffset = offset;
+  dayButtons.forEach(b => b.classList.toggle('active', Number(b.dataset.offset) === offset));
   renderAll();
+}
+
+dayButtons.forEach(btn => {
+  btn.addEventListener('click', () => {
+    const offset = Number(btn.dataset.offset);
+    if(offset === 0){
+      const now = new Date();
+      forecastTime.value = `${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}`;
+      saveTargetTime(forecastTime.value);
+    }
+    setDayOffset(offset);
+  });
 });
 
 loadForecast();
@@ -665,6 +688,7 @@ locateBtn.addEventListener('click', () => {
   if(sortMode === 'distance'){
     sortMode = 'dispo';
     saveSortMode(sortMode);
+    userPos = null;
     locateBtn.classList.remove('active');
     renderAll();
     return;

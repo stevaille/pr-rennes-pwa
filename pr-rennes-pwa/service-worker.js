@@ -1,4 +1,4 @@
-const SHELL_CACHE = 'pr-rennes-shell-v12';
+const SHELL_CACHE = 'pr-rennes-shell-v16';
 const DATA_CACHE = 'pr-rennes-data-v1';
 
 const SHELL_FILES = [
