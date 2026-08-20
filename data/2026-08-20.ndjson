@@ -102,3 +102,11 @@
 {"ts":"2026-08-20T10:02:00+00:00","idparc":"PRE","nom":"Les Préales","etatouverture":"OUVERT","capacite":269,"dispo":246}
 {"ts":"2026-08-20T10:02:00+00:00","idparc":"SJG","nom":"Saint-Jacques - Gaîté","etatouverture":"OUVERT","capacite":765,"dispo":425}
 {"ts":"2026-08-20T10:02:00+00:00","idparc":"VU","nom":"Villejean-Université","etatouverture":"FERME","capacite":389,"dispo":0}
+{"ts":"2026-08-20T10:41:00+00:00","idparc":"CVI","nom":"Cesson-Viasilva","etatouverture":"OUVERT","capacite":811,"dispo":534}
+{"ts":"2026-08-20T10:41:00+00:00","idparc":"HFR","nom":"Henri Fréville","etatouverture":"OUVERT","capacite":416,"dispo":106}
+{"ts":"2026-08-20T10:41:00+00:00","idparc":"JFK","nom":"J.F. Kennedy","etatouverture":"OUVERT","capacite":396,"dispo":178}
+{"ts":"2026-08-20T10:41:00+00:00","idparc":"LGA","nom":"Les Gayeulles","etatouverture":"OUVERT","capacite":401,"dispo":283}
+{"ts":"2026-08-20T10:41:00+00:00","idparc":"POT","nom":"La Poterie","etatouverture":"OUVERT","capacite":691,"dispo":303}
+{"ts":"2026-08-20T10:41:00+00:00","idparc":"PRE","nom":"Les Préales","etatouverture":"OUVERT","capacite":269,"dispo":244}
+{"ts":"2026-08-20T10:41:00+00:00","idparc":"SJG","nom":"Saint-Jacques - Gaîté","etatouverture":"OUVERT","capacite":765,"dispo":400}
+{"ts":"2026-08-20T10:41:00+00:00","idparc":"VU","nom":"Villejean-Université","etatouverture":"FERME","capacite":389,"dispo":0}
