@@ -63,7 +63,7 @@
 
   .scene{
     max-width:640px;margin:0 auto;
-    padding-top:max(28px, env(safe-area-inset-top));
+    padding-top:max(28px, calc(env(safe-area-inset-top) + 20px));
     padding-right:max(18px, env(safe-area-inset-right));
     padding-bottom:max(56px, env(safe-area-inset-bottom));
     padding-left:max(18px, env(safe-area-inset-left));
@@ -557,7 +557,7 @@ function saveTargetTime(v){
 
 forecastTime.value = loadTargetTime();
 
-const PREDICTIONS_URL = 'https://cdn.jsdelivr.net/gh/stevaille/pr-rennes-pwa@data/predictions.json';
+const PREDICTIONS_URL = 'https://raw.githubusercontent.com/stevaille/pr-rennes-pwa/data/predictions.json';
 
 async function loadForecast(){
   try{
